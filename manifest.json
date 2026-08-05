@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "FASIH Extensions",
+  "version": "1.0.0",
+  "description": "Scraping, Approve/Revoke/Reject, Rekap Alokasi, Progress & Email History — FASIH SM",
+  "permissions": ["activeTab", "storage", "tabs"],
+  "host_permissions": ["https://fasih-sm.bps.go.id/*"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "FASIH Extensions"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://fasih-sm.bps.go.id/*"],
+      "js": ["config.js", "content.js"]
+    },
+    {
+      "matches": ["https://fasih-sm.bps.go.id/app/assignment/*"],
+      "js": ["config.js", "content_actions.js"]
+    }
+  ]
+}

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <title>FASIH Extensions</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="header">
+    <h1>FASIH Extensions</h1>
+    <p class="subtitle">Scrape · Approve · Revoke · Reject · Rekap</p>
+  </div>
+
+  <div class="tabs-container">
+    <button id="tab-menu" class="tab-btn active">Menu</button>
+    <button id="tab-progress" class="tab-btn">Progress</button>
+    <button id="tab-automasi" class="tab-btn">Automasi</button>
+  </div>
+
+  <div class="content">
+    <!-- PANE: MENU UTAMA -->
+    <div id="pane-menu" class="pane active">
+      <div id="step-init" class="step"><div class="center"><div class="spinner"></div></div></div>
+
+      <div id="step-wrong-page" class="step hidden">
+        <div class="notice notice-warn"><span id="wrong-page-msg">Buka <strong>fasih-sm.bps.go.id/app</strong> terlebih dahulu.</span></div>
+      </div>
+
+      <!-- STEP 1: Survey & Periode -->
+      <div id="step-survey" class="step hidden">
+        <p class="step-label">1. Tipe Survey:</p>
+        <select id="sel-survey-type" class="sel-prov">
+          <option value="pencacahan">Pencacahan</option>
+          <option value="pelatihan">Pelatihan</option>
+          <option value="ujicoba">Uji Coba</option>
+        </select>
+
+        <p class="step-label" style="margin-top:8px;">2. Pilih Survey:</p>
+        <select id="sel-survey" class="sel-prov" disabled><option>Memuat...</option></select>
+
+        <p class="step-label" style="margin-top:8px;">3. Pilih Periode:</p>
+        <select id="sel-period" class="sel-prov" disabled><option>Pilih survey dulu</option></select>
+
+        <button id="btn-survey-next" class="btn btn-primary" disabled>Lanjutkan →</button>
+      </div>
+
+      <!-- STEP 2: Provinsi & Kabupaten (muncul setelah survey dipilih) -->
+      <div id="step-region" class="step hidden">
+        <div class="notice notice-info" id="survey-info" style="background:#eaf0fb;border-left:3px solid #1a5276;margin-bottom:10px;font-size:12px;padding:8px 12px;"></div>
+
+        <p class="step-label">4. Pilih Provinsi:</p>
+        <select id="sel-prov" class="sel-prov">
+          <option value="11">11 – Aceh</option><option value="12">12 – Sumatera Utara</option>
+          <option value="13">13 – Sumatera Barat</option><option value="14">14 – Riau</option>
+          <option value="15">15 – Jambi</option><option value="16">16 – Sumatera Selatan</option>
+          <option value="17">17 – Bengkulu</option><option value="18">18 – Lampung</option>
+          <option value="19">19 – Kep. Bangka Belitung</option><option value="21">21 – Kep. Riau</option>
+          <option value="31">31 – DKI Jakarta</option><option value="32">32 – Jawa Barat</option>
+          <option value="33">33 – Jawa Tengah</option><option value="34">34 – DI Yogyakarta</option>
+          <option value="35">35 – Jawa Timur</option><option value="36">36 – Banten</option>
+          <option value="51">51 – Bali</option><option value="52">52 – Nusa Tenggara Barat</option>
+          <option value="53">53 – Nusa Tenggara Timur</option><option value="61">61 – Kalimantan Barat</option>
+          <option value="62">62 – Kalimantan Tengah</option><option value="63">63 – Kalimantan Selatan</option>
+          <option value="64">64 – Kalimantan Timur</option><option value="65">65 – Kalimantan Utara</option>
+          <option value="71">71 – Sulawesi Utara</option>
+          <option value="72" selected>72 – Sulawesi Tengah</option>
+          <option value="73">73 – Sulawesi Selatan</option><option value="74">74 – Sulawesi Tenggara</option>
+          <option value="75">75 – Gorontalo</option><option value="76">76 – Sulawesi Barat</option>
+          <option value="81">81 – Maluku</option><option value="82">82 – Maluku Utara</option>
+          <option value="91">91 – Papua Barat</option><option value="92">92 – Papua</option>
+          <option value="94">94 – Papua Selatan</option><option value="95">95 – Papua Tengah</option>
+          <option value="96">96 – Papua Pegunungan</option><option value="97">97 – Papua Barat Daya</option>
+        </select>
+
+        <p class="step-label" style="margin-top:8px;">5. Pilih Kabupaten:</p>
+        <div id="kab-loading" class="hidden"><div class="center"><div class="spinner spinner-sm"></div> Mengambil kabupaten...</div></div>
+        <select id="sel-kab" class="sel-prov" style="display:none;"></select>
+
+        <hr style="margin:12px 0; border:0; border-top:1px solid #e0e0e0;">
+
+        <p class="step-label">6. Pilih Aksi:</p>
+        <div class="menu-grid">
+          <button class="btn btn-menu" data-action="scrape_wilayah">📥 Scrape Wilayah</button>
+          <button class="btn btn-menu" data-action="scrape_detail">📥 Scrape Detail</button>
+          <button class="btn btn-menu" data-action="approve_anomali">✅ Approve Anomali</button>
+          <button class="btn btn-menu" data-action="approve">✅ Approve</button>
+          <button class="btn btn-menu" data-action="revoke">🔙 Revoke</button>
+          <button class="btn btn-menu" data-action="reject">❌ Reject</button>
+          <button class="btn btn-menu" data-action="email">📧 Email History</button>
+          <button class="btn btn-menu" data-action="alokasi">📋 Rekap Alokasi</button>
+        </div>
+
+        <div id="filter-section" class="hidden" style="margin-top:10px;">
+          <p class="step-label">Filter ID (opsional, satu per baris):</p>
+          <textarea id="filter-ids" rows="3" class="auto-textarea" placeholder="ID assignment..."></textarea>
+        </div>
+
+        <button id="btn-execute" class="btn btn-primary" disabled>🚀 Jalankan</button>
+        <button id="btn-back-survey" class="btn btn-ghost">← Ganti Survey</button>
+      </div>
+
+      <div id="step-running" class="step hidden">
+        <div class="progress-status">
+          <div class="spinner spinner-sm"></div>
+          <span id="run-status-text">Memproses...</span>
+        </div>
+        <div id="run-log" class="log"></div>
+        <button id="btn-run-cancel" class="btn btn-danger">⛔ Batalkan</button>
+      </div>
+
+
+
+      <div id="step-done" class="step hidden">
+        <div class="notice notice-success">
+          <strong>Selesai!</strong>
+          <div id="done-summary"></div>
+        </div>
+        <button id="btn-view-results" class="btn btn-primary">📊 Lihat & Download Hasil</button>
+        <button id="btn-back-menu" class="btn btn-ghost">← Kembali ke Menu</button>
+      </div>
+
+      <div id="step-error" class="step hidden">
+        <div class="notice notice-error">
+          <strong>Gagal</strong>
+          <div id="error-detail"></div>
+        </div>
+        <button id="btn-retry" class="btn btn-secondary">Coba Lagi</button>
+      </div>
+    </div>
+
+    <!-- PANE: PROGRESS (from se-progress-extension) -->
+    <div id="pane-progress" class="pane">
+      <div id="prog-step-role" class="step">
+        <p class="step-label">1. Pilih Provinsi:</p>
+        <select id="prog-sel-prov" class="sel-prov">
+          <option value="11">11 – Aceh</option><option value="12">12 – Sumatera Utara</option>
+          <option value="13">13 – Sumatera Barat</option><option value="14">14 – Riau</option>
+          <option value="15">15 – Jambi</option><option value="16">16 – Sumatera Selatan</option>
+          <option value="17">17 – Bengkulu</option><option value="18">18 – Lampung</option>
+          <option value="19">19 – Kep. Bangka Belitung</option><option value="21">21 – Kep. Riau</option>
+          <option value="31">31 – DKI Jakarta</option><option value="32">32 – Jawa Barat</option>
+          <option value="33">33 – Jawa Tengah</option><option value="34">34 – DI Yogyakarta</option>
+          <option value="35">35 – Jawa Timur</option><option value="36">36 – Banten</option>
+          <option value="51">51 – Bali</option><option value="52">52 – Nusa Tenggara Barat</option>
+          <option value="53">53 – Nusa Tenggara Timur</option><option value="61">61 – Kalimantan Barat</option>
+          <option value="62">62 – Kalimantan Tengah</option><option value="63">63 – Kalimantan Selatan</option>
+          <option value="64">64 – Kalimantan Timur</option><option value="65">65 – Kalimantan Utara</option>
+          <option value="71">71 – Sulawesi Utara</option>
+          <option value="72" selected>72 – Sulawesi Tengah</option>
+          <option value="73">73 – Sulawesi Selatan</option><option value="74">74 – Sulawesi Tenggara</option>
+          <option value="75">75 – Gorontalo</option><option value="76">76 – Sulawesi Barat</option>
+          <option value="81">81 – Maluku</option><option value="82">82 – Maluku Utara</option>
+          <option value="91">91 – Papua Barat</option><option value="92">92 – Papua</option>
+          <option value="94">94 – Papua Selatan</option><option value="95">95 – Papua Tengah</option>
+          <option value="96">96 – Papua Pegunungan</option><option value="97">97 – Papua Barat Daya</option>
+        </select>
+        
+        <p class="step-label" style="margin-top:10px;">2. Pilih Peran:</p>
+        <div class="btn-group">
+          <button class="btn btn-role" id="btn-pengawas">Pengawas</button>
+          <button class="btn btn-role" id="btn-pencacah">Pencacah</button>
+        </div>
+      </div>
+
+      <div id="prog-step-loading" class="step hidden">
+        <div class="center"><div class="spinner"></div><p>Mengambil daftar kabupaten...</p></div>
+      </div>
+
+      <div id="prog-step-kabs" class="step hidden">
+        <p class="step-label">Pilih Kabupaten/Kota:</p>
+        <div class="kab-header">
+          <label class="chk-label"><input type="checkbox" id="prog-chk-all"> Pilih Semua</label>
+          <span id="prog-kab-count" class="kab-count">0 dipilih</span>
+        </div>
+        <div id="prog-kab-list" class="kab-list"></div>
+        <button id="prog-btn-start" class="btn btn-primary" disabled>Mulai Ekstrak Progress</button>
+      </div>
+
+      <div id="prog-step-progress" class="step hidden">
+        <div class="progress-status">
+          <div class="spinner spinner-sm"></div>
+          <span id="prog-progress-text">Memproses...</span>
+        </div>
+        <div id="prog-log" class="log"></div>
+        <button id="prog-btn-cancel" class="btn btn-danger">⛔ Batalkan</button>
+      </div>
+
+      <div id="prog-step-done" class="step hidden">
+        <div class="notice notice-success">
+          <strong>Selesai!</strong>
+          <div id="prog-done-summary"></div>
+        </div>
+        <button id="prog-btn-view" class="btn btn-primary">Lihat Hasil →</button>
+        <button id="prog-btn-restart" class="btn btn-ghost">Ekstrak Ulang</button>
+      </div>
+    </div>
+
+    <!-- PANE: AUTOMASI -->
+    <div id="pane-automasi" class="pane">
+      <div id="auto-setup">
+        <p class="step-label">Daftar Assignment ID (Satu per baris):</p>
+        <textarea id="auto-input" rows="6" class="auto-textarea" placeholder="Contoh:&#10;1a2b3c...&#10;4d5e6f..."></textarea>
+
+        <p class="step-label">Tipe Aksi:</p>
+        <select id="auto-action-type" class="sel-prov" style="margin-bottom:10px;">
+          <option value="approve">Approve</option>
+          <option value="revoke">Revoke</option>
+          <option value="reject">Reject</option>
+        </select>
+
+        <button id="btn-auto-start" class="btn btn-primary">Mulai Automasi</button>
+      </div>
+
+      <div id="auto-progress" class="hidden">
+        <div class="progress-status">
+          <div id="auto-spinner" class="spinner spinner-sm"></div>
+          <span id="auto-status-text">Memproses...</span>
+        </div>
+        <div id="auto-log" class="log"></div>
+        <button id="btn-auto-stop" class="btn btn-danger">⛔ Hentikan</button>
+        <button id="btn-auto-resume" class="btn btn-primary hidden" style="margin-top:8px; width:100%;">▶ Lanjutkan (Resume)</button>
+        <button id="btn-auto-export" class="btn btn-secondary hidden" style="margin-top:8px; width:100%;">Download CSV Hasil</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
