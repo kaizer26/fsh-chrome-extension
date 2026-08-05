@@ -1,6 +1,6 @@
-# FASIH Chrome Extension
+# FASSEHH Chrome Extension
 
-Ekstensi Google Chrome untuk mempermudah dan mengotomatisasi proses pada platform **FASIH-SM BPS (fasih-sm.bps.go.id)**.
+Ekstensi Google Chrome untuk mempermudah dan mengotomatisasi proses pada platform **FASSEHH-SM BPS (fasih-sm.bps.go.id)**.
 
 ## 🚀 Fitur Utama
 
@@ -9,7 +9,7 @@ Ekstensi Google Chrome untuk mempermudah dan mengotomatisasi proses pada platfor
    - Hasil *scrape* otomatis diunduh dalam format Excel (CSV).
 2. **Automasi Approve, Reject, dan Revoke**
    - Melakukan aksi persetujuan (*Approve*), penolakan (*Reject*), atau penarikan (*Revoke*) pada banyak *assignment* sekaligus secara otomatis (dalam satu klik).
-   - Menangani pop-up konfirmasi (dialog Radix UI) dan mengambil log notifikasi sukses/gagal dari sistem FASIH.
+   - Menangani pop-up konfirmasi (dialog Radix UI) dan mengambil log notifikasi sukses/gagal dari sistem FASSEHH.
 3. **Automasi Approve Anomali**
    - Mengotomatisasi alur kompleks untuk klik halaman catatan, menyalakan switch "Cek Anomali" dan "Anomali Admin", serta membaca anomali (usaha/keluarga) sebelum men-submit konfirmasi approval.
 4. **Rekap Alokasi & Progress**
@@ -25,14 +25,14 @@ Ekstensi Google Chrome untuk mempermudah dan mengotomatisasi proses pada platfor
 3. Aktifkan **Developer mode** (Mode Pengembang) di pojok kanan atas.
 4. Klik tombol **Load unpacked** (Muat yang belum diekstrak).
 5. Pilih folder tempat Anda menyimpan repository ini (pilih folder `fasih-extensions`).
-6. Ekstensi FASIH siap digunakan! Pin ekstensi pada toolbar agar mudah diakses.
+6. Ekstensi FASSEHH siap digunakan! Pin ekstensi pada toolbar agar mudah diakses.
 
 ## 📖 Cara Penggunaan
 
 ### 1. Memulai (Inisialisasi)
-1. Buka halaman aplikasi FASIH BPS: [https://fasih-sm.bps.go.id/app/](https://fasih-sm.bps.go.id/app/)
+1. Buka halaman aplikasi FASSEHH BPS: [https://fasih-sm.bps.go.id/app/](https://fasih-sm.bps.go.id/app/)
 2. Pastikan Anda sudah **Login**.
-3. Klik icon ekstensi FASIH di pojok kanan atas Chrome.
+3. Klik icon ekstensi FASSEHH di pojok kanan atas Chrome.
 4. Akan muncul jendela ekstensi. Pada tab **Menu**, ikuti langkah berikut:
    - Pilih **Tipe Survey** (Pencacahan / Pelatihan / Uji Coba).
    - Pilih **Nama Survey**.
@@ -65,7 +65,7 @@ Fitur Automasi akan menjalankan aksi pada puluhan/ratusan assignment sekaligus d
 
 ### 4. Scraping Data (Unduh Data Assignment)
 1. Pada halaman pemilihan wilayah (Provinsi/Kabupaten), klik tombol **Scrape (Unduh Data)**.
-2. Ekstensi akan mengambil seluruh data assignment yang ada pada wilayah tersebut dengan mem-bypass pagination API FASIH.
+2. Ekstensi akan mengambil seluruh data assignment yang ada pada wilayah tersebut dengan mem-bypass pagination API FASSEHH.
 3. Setelah selesai, file akan otomatis diunduh dalam bentuk `.csv` yang bisa langsung dibuka di Excel.
 
 ## ⚙️ Cara Kerja Teknis (Background & Content Script)
@@ -73,10 +73,10 @@ Fitur Automasi akan menjalankan aksi pada puluhan/ratusan assignment sekaligus d
 Ekstensi ini dirancang secara tangguh untuk menghindari batasan browser (seperti popup ekstensi yang tertutup):
 - **Popup UI:** Terpisah dari tugas automasi berat. Menampilkan antarmuka yang user-friendly dan memantau state.
 - **Background Worker (`background.js`):** Mengatur antrean (queue) dan status automasi. Background ini menggunakan `chrome.tabs.sendMessage` dengan sistem jeda waktu (*wait for SPA render*) untuk mengamankan komunikasi dengan tab.
-- **Content Action (`content_actions.js`):** Script mandiri (terbungkus IIFE) yang mendeteksi ikon SVG dan elemen DOM FASIH, meng-klik secara simulasi (termasuk Pop-up konfirmasi dialog Radix UI), dan melaporkan hasilnya kembali.
+- **Content Action (`content_actions.js`):** Script mandiri (terbungkus IIFE) yang mendeteksi ikon SVG dan elemen DOM FASSEHH, meng-klik secara simulasi (termasuk Pop-up konfirmasi dialog Radix UI), dan melaporkan hasilnya kembali.
 
 ## 🤝 Kontribusi
-Jika Anda menemukan bug pada web FASIH yang berubah struktur UI-nya, harap periksa kembali fungsi XPath di `content_actions.js`.
+Jika Anda menemukan bug pada web FASSEHH yang berubah struktur UI-nya, harap periksa kembali fungsi XPath di `content_actions.js`.
 
 ---
-*Dibuat untuk mempermudah pekerjaan pengelolaan survey FASIH secara aman, otomatis, dan efisien.*
+*Dibuat untuk mempermudah pekerjaan pengelolaan survey FASSEHH secara aman, otomatis, dan efisien.*
